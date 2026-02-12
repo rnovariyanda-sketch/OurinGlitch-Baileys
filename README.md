@@ -1,7 +1,7 @@
 
 <div align="center">
-  <h1>OURIN GLITCH - Baileys</h1>
-  <img src="https://cdn.gimita.id/download/cdf3f1346729e19da8a824fd24f4d32e_1770348128856_8081b7fd.jpg" alt="Thumbnail" width='100%' />
+  <h1>OURIN BAILEYS</h1>
+  <img src="https://cdn.gimita.id/download/unnamed%20(14)_1770865450578_2b897c93.jpg" alt="Thumbnail" width='100%' />
 </div>
 
 <br>
@@ -20,7 +20,7 @@ Baileys is a fork from github https://github.com/Nted3xec/baileys
 - Fixing damage to Pairing 
 - Supports Paymess, Interactive, and button
 - Support button in WhatsApp business  
-- And this feature is complete 
+- Faster performance
 
 ## Add Function ( Simple code )
 
@@ -478,6 +478,99 @@ await ourin.sendMessage(jid, {
         }
     }
 }, { quoted: m });
+```
+
+### Sticker Pack Message
+Send a sticker pack with multiple stickers in one message:
+
+```javascript
+await ourin.sendMessage(jid, {
+    stickerPack: {
+        name: "My Sticker Pack",
+        publisher: "OURIN MD",
+        description: "Custom sticker pack",
+        cover: { url: "https://example.com/cover.png" },
+        stickers: [
+            { sticker: fs.readFileSync("./sticker1.webp"), emojis: ["😎"] },
+            { sticker: fs.readFileSync("./sticker2.webp"), isAnimated: true },
+            { sticker: { url: "https://example.com/sticker3.webp" } }
+        ]
+    }
+}, { quoted: m });
+```
+
+**Sticker Options**
+- `sticker` — Buffer or URL of the sticker (WebP format)
+- `emojis` — Array of emoji associated with the sticker
+- `isAnimated` — Set to `true` for animated stickers
+- `isLottie` — Set to `true` for Lottie stickers
+- `accessibilityLabel` — Accessibility label for the sticker
+
+---
+
+## Media Utilities
+
+Lightweight media processing functions built directly into the socket. Uses `sharp` (native C) for images and `ffmpeg` pipes for video/audio — zero temp files, maximum speed.
+
+### Resize
+Fast image resize with aspect ratio preserved
+
+```javascript
+const resized = await ourin.resize(buffer, 200, 200)
+```
+---
+### Convert
+Convert media format — supports `jpeg`, `jpg`, `png`, `webp`, `mp3`, `mp4`
+
+```javascript
+const mp4 = await ourin.convert(buffer, { to: "mp4" })
+const webp = await ourin.convert(buffer, { to: "webp" })
+const mp3 = await ourin.convert(buffer, { to: "mp3" })
+```
+---
+### To Sticker
+Convert any image to WhatsApp sticker format (512x512 WebP with transparency)
+
+```javascript
+const sticker = await ourin.toSticker(buffer)
+const sticker = await ourin.toSticker(buffer, { quality: 90 })
+```
+---
+### Compress
+Compress media with quality control — auto-detects image or video
+
+```javascript
+const compressed = await ourin.compress(buffer, { quality: 50 })
+```
+---
+### Metadata
+Extract media metadata — auto-detects image (sharp) or video/audio (ffprobe)
+
+```javascript
+const info = await ourin.metadata(buffer)
+```
+
+Result JSON
+```json
+{
+  "size": 102400,
+  "mimetype": "image/jpeg",
+  "width": 1920,
+  "height": 1080,
+  "channels": 3,
+  "hasAlpha": false
+}
+```
+
+For video/audio:
+```json
+{
+  "size": 5242880,
+  "mimetype": "video/mp4",
+  "width": 1280,
+  "height": 720,
+  "duration": 30.5
+}
 ```
 
 ---
